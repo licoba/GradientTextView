@@ -2,7 +2,7 @@
     <string name="app_name">GradientTextView</string>
     <string name="test_single">单行文本效果：</string>
     <string name="test_multiple">多行文本效果：</string>
-
+    <string name="progress">进度：</string>
     <string name="single_test_text">一闪一闪亮晶晶，满天都是小星星。 </string>
     <string name="multiple_test_text">一闪一闪亮晶晶，满天都是小星星。一闪一闪亮晶晶，满天都是小星星。一闪一闪亮晶晶，满天都是小星星。一闪一闪亮晶晶，满天都是小星星。一闪一闪亮晶晶，满天都是小星星。</string>
 

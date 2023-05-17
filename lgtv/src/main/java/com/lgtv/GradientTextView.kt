@@ -30,8 +30,6 @@ class GradientTextView @JvmOverloads constructor(
 
     private var beforeColor: Int = 0
     private var afterColor: Int = 0
-    private var text: String = ""
-    private var textSizes: Float = 0F
     private lateinit var beforePaint: TextPaint
     private lateinit var afterPaint: TextPaint
     private var currentProgress: Float = 0F
@@ -46,8 +44,6 @@ class GradientTextView @JvmOverloads constructor(
         val attributes = context.obtainStyledAttributes(attrs, R.styleable.GradientTextView)
 
         attributes?.run {
-            text = getString(R.styleable.GradientTextView_text).toString()
-            textSizes = getDimension(R.styleable.GradientTextView_textSize, 10F)
             beforeColor = getInt(R.styleable.GradientTextView_beforeColor, Color.WHITE)
             afterColor = getInt(R.styleable.GradientTextView_afterColor, Color.RED)
             recycle()
@@ -60,6 +56,7 @@ class GradientTextView @JvmOverloads constructor(
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onDraw(canvas: Canvas) {
+//        super.onDraw(canvas)
         clipRectBefore(canvas, beforePaint)
         clipRectAfter(canvas, afterPaint)
     }
@@ -67,11 +64,16 @@ class GradientTextView @JvmOverloads constructor(
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun clipRectBefore(canvas: Canvas, paint: TextPaint) {
+        val rawTextView = this@GradientTextView
+        val lineSpace =
+            if (containsChinese(rawTextView.text.toString())) 1.23f else rawTextView.lineSpacingMultiplier
         val layout = StaticLayout.Builder
             .obtain(text, 0, text.length, paint, width)
             .setAlignment(Layout.Alignment.ALIGN_NORMAL)
-            .setLineSpacing(0f, 1.2f)
+            .setLineSpacing(rawTextView.lineSpacingExtra, lineSpace)
+            .setEllipsize(rawTextView.ellipsize)
             .setIncludePad(true)
+
             .build()
         canvas.save()
         layout.draw(canvas)
@@ -82,11 +84,15 @@ class GradientTextView @JvmOverloads constructor(
     @RequiresApi(Build.VERSION_CODES.M)
     private fun clipRectAfter(canvas: Canvas, paint: TextPaint) {
         canvas.save()
+        val rawTextView = this@GradientTextView
+        val lineSpace =
+            if (containsChinese(rawTextView.text.toString())) 1.23f else rawTextView.lineSpacingMultiplier
         val staticLayout = StaticLayout.Builder
             .obtain(text, 0, text.length, paint, width)
             .setAlignment(Layout.Alignment.ALIGN_NORMAL)
-            .setLineSpacing(0f, 1.2f)
             .setIncludePad(true)
+            .setLineSpacing(rawTextView.lineSpacingExtra, lineSpace)
+
             .build()
         // 创建一个新路径并添加顶部矩形
         val path = Path()
@@ -143,18 +149,6 @@ class GradientTextView @JvmOverloads constructor(
 
 
     /**
-     * 遍历获取所有文本行中，宽度最大的那一行，作为单行的宽度
-     */
-    private fun getSingleTextWidth(staticLayout: StaticLayout): Float {
-        var totalWidth = 0f
-        for (i in 0 until staticLayout.lineCount) {
-            totalWidth = totalWidth.coerceAtLeast(staticLayout.getLineWidth(i))
-        }
-        return totalWidth
-    }
-
-
-    /**
      * 获取当前是有几行？
      */
     private fun getCurLines(curWidth: Float, staticLayout: StaticLayout): Int {
@@ -191,7 +185,8 @@ class GradientTextView @JvmOverloads constructor(
             setColor(color)
             isAntiAlias = true
             isDither = true //防抖动
-            textSize = textSizes
+            textSize = this@GradientTextView.textSize
+
         }
     }
 
@@ -210,6 +205,19 @@ class GradientTextView @JvmOverloads constructor(
     fun setCurrentProgress(currentProgress: Float) {
         this.currentProgress = currentProgress
         invalidate()
+    }
+
+
+    /**
+     * 判断是否包含中文字符
+     */
+    fun containsChinese(text: String): Boolean {
+        for (element in text) {
+            if (element.code in 0x4E00..0x9FA5) {
+                return true
+            }
+        }
+        return false
     }
 
 
