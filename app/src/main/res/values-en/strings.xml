@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">GradientTextView</string>
+    <string name="test_single">Single line text effect:</string>
+    <string name="test_multiple">Multi-line text effect:</string>
+    <string name="single_test_text">Twinkle, Twinkle, Little Star. </string>
+    <string name="multiple_test_text">Twinkle, twinkle, little star, How I wonder what you are! Twinkle, twinkle, little star, How I wonder what you are! Twinkle, twinkle, little star, How I wonder what you are! Twinkle, twinkle, little star, How I wonder what you are!</string>
+
+</resources>

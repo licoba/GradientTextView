@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="GradientTextView">
+        <attr name="text" format="string"/>
+        <attr name="textSize" format="dimension"/>
+        <attr name="beforeColor" format="color"/>
+        <attr name="afterColor" format="color"/>
+    </declare-styleable>
+</resources>
